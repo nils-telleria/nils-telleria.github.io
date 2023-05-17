@@ -1,0 +1,731 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "contact": {
+      "email": "See intake policy",
+      "name": "RQ Business Solutions",
+      "url": "https://wiki2.iqmetrix.com/display/BUSS/Business+Solutions+Runbooks#BusinessSolutionsRunbooks-escalationpolicy"
+    },
+    "description": "This is an API owned by the Business Solutions team.",
+    "title": "RQ.Services.Documents",
+    "version": "1.3.1",
+    "x-logo": {
+      "altText": "Logo",
+      "url": "https://bslogostorage.blob.core.windows.net/assets/BusinessSolutionsLogo.png"
+    }
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": null,
+            "schema": {
+              "properties": {
+                "errors": {
+                  "type": "array"
+                },
+                "status": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "tags": [
+          "ApiHealth"
+        ]
+      }
+    },
+    "/ping": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/ApplicationPingMetadata"
+            }
+          },
+          "400": {
+            "description": "BadRequest",
+            "schema": {}
+          }
+        },
+        "tags": [
+          "ApiHealth"
+        ],
+        "summary": "/ping"
+      }
+    },
+    "/v1/companies/{companyId}/documents/create": {
+      "post": {
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "The company id to create the document for.",
+            "format": "int32",
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "description": "The file to upload as a document.",
+            "format": "binary",
+            "in": "formData",
+            "name": "File",
+            "type": "string"
+          },
+          {
+            "description": "The id of the document.",
+            "format": "uuid",
+            "in": "formData",
+            "name": "Data.Id",
+            "type": "string"
+          },
+          {
+            "description": "The RQ id of the customer that the document is assigned to.",
+            "format": "int32",
+            "in": "formData",
+            "name": "Data.RQCustomerId",
+            "type": "integer"
+          },
+          {
+            "description": "The RQ id of the employee who created the document.",
+            "format": "int32",
+            "in": "formData",
+            "name": "Data.RQEmployeeId",
+            "type": "integer"
+          },
+          {
+            "description": "The id of the RQ component that this document pertains to.",
+            "format": "int32",
+            "in": "formData",
+            "name": "Data.ComponentId",
+            "type": "integer"
+          },
+          {
+            "description": "The primary key of the RQ component this documents pertains to.",
+            "format": "int32",
+            "in": "formData",
+            "name": "Data.ComponentPrimaryKey",
+            "type": "integer"
+          },
+          {
+            "description": "The RQ id of the employee that created the document.",
+            "in": "formData",
+            "name": "Data.CreatedByUserId",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "BadRequest",
+            "schema": {}
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {}
+          },
+          "500": {
+            "description": "InternalServerError",
+            "schema": {}
+          }
+        },
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Creates a new document in the service."
+      }
+    },
+    "/v1/companies/{companyId}/documents/{documentId}": {
+      "delete": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "",
+            "format": "int32",
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "description": "",
+            "format": "uuid",
+            "in": "path",
+            "name": "documentId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "BadRequest",
+            "schema": {}
+          },
+          "500": {
+            "description": "InternalServerError",
+            "schema": {}
+          }
+        },
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Deletes a document by id"
+      },
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "format": "int32",
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "format": "uuid",
+            "in": "path",
+            "name": "documentId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "format": "binary",
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "BadRequest",
+            "schema": {}
+          },
+          "404": {
+            "description": "NotFound",
+            "schema": {}
+          },
+          "500": {
+            "description": "InternalServerError",
+            "schema": {}
+          }
+        },
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Retrieves a document by id as a file stream."
+      },
+      "post": {
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "The company id to update the document for.",
+            "format": "int32",
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "description": "The document id of the updated document.",
+            "format": "uuid",
+            "in": "path",
+            "name": "documentId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "The file to upload as a document.",
+            "format": "binary",
+            "in": "formData",
+            "name": "File",
+            "type": "string"
+          },
+          {
+            "description": "The RQ id of the employee that updated the document.",
+            "in": "formData",
+            "name": "Data.UpdatedByUserId",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "BadRequest",
+            "schema": {}
+          },
+          "404": {
+            "description": "NotFound",
+            "schema": {}
+          },
+          "500": {
+            "description": "InternalServerError",
+            "schema": {}
+          }
+        },
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Updates a document in the service."
+      }
+    },
+    "/v1/companies/{companyId}/documents/{documentId}/metadata": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "format": "int32",
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "format": "uuid",
+            "in": "path",
+            "name": "documentId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/DocumentMetadataResponse"
+            }
+          },
+          "400": {
+            "description": "BadRequest",
+            "schema": {}
+          },
+          "404": {
+            "description": "NotFound",
+            "schema": {}
+          },
+          "500": {
+            "description": "InternalServerError",
+            "schema": {}
+          }
+        },
+        "tags": [
+          "Documents"
+        ],
+        "summary": "Retrieves a document's metadata by id"
+      }
+    }
+  },
+  "definitions": {
+    "ApplicationPingMetadata": {
+      "additionalProperties": false,
+      "description": "Metadata returned from the ping endpoint",
+      "properties": {
+        "buildDate": {
+          "description": "The datetime that the docker image was built",
+          "format": "date-time",
+          "type": "string",
+          "x-nullable": true
+        },
+        "environment": {
+          "description": "The environment the service is deployed to",
+          "type": "string",
+          "x-nullable": true
+        },
+        "imageTag": {
+          "description": "The name of the deployed docker image",
+          "type": "string",
+          "x-nullable": true
+        },
+        "name": {
+          "description": "The name of the service",
+          "type": "string",
+          "x-nullable": true
+        },
+        "version": {
+          "description": "The version number of the service",
+          "type": "string",
+          "x-nullable": true
+        }
+      },
+      "type": "object"
+    },
+    "DeleteDocumentBlobError": {
+      "additionalProperties": false,
+      "description": "The output model when returning an error from the service.",
+      "properties": {
+        "errorInformation": {},
+        "errorType": {
+          "enum": [
+            "DeleteDocumentBlobError"
+          ],
+          "type": "string"
+        },
+        "innerError": {
+          "$ref": "#/definitions/Error"
+        },
+        "message": {
+          "description": "A short message describing the error.",
+          "type": "string",
+          "x-nullable": true
+        },
+        "stackTrace": {
+          "description": "Stack Trace of the error.",
+          "type": "string",
+          "x-nullable": true
+        }
+      },
+      "title": "DeleteDocumentBlobError",
+      "type": "object"
+    },
+    "DeleteDocumentMetadataError": {
+      "additionalProperties": false,
+      "description": "The output model when returning an error from the service.",
+      "properties": {
+        "errorInformation": {},
+        "errorType": {
+          "enum": [
+            "DeleteDocumentMetadataError"
+          ],
+          "type": "string"
+        },
+        "innerError": {
+          "$ref": "#/definitions/Error"
+        },
+        "message": {
+          "description": "A short message describing the error.",
+          "type": "string",
+          "x-nullable": true
+        },
+        "stackTrace": {
+          "description": "Stack Trace of the error.",
+          "type": "string",
+          "x-nullable": true
+        }
+      },
+      "title": "DeleteDocumentMetadataError",
+      "type": "object"
+    },
+    "DocumentAlreadyExistsError": {
+      "additionalProperties": false,
+      "description": "The output model when returning an error from the service.",
+      "properties": {
+        "errorInformation": {},
+        "errorType": {
+          "enum": [
+            "DocumentAlreadyExistsError"
+          ],
+          "type": "string"
+        },
+        "innerError": {
+          "$ref": "#/definitions/Error"
+        },
+        "message": {
+          "description": "A short message describing the error.",
+          "type": "string",
+          "x-nullable": true
+        },
+        "stackTrace": {
+          "description": "Stack Trace of the error.",
+          "type": "string",
+          "x-nullable": true
+        }
+      },
+      "title": "DocumentAlreadyExistsError",
+      "type": "object"
+    },
+    "DocumentMetadataNotFoundError": {
+      "additionalProperties": false,
+      "description": "The output model when returning an error from the service.",
+      "properties": {
+        "errorInformation": {},
+        "errorType": {
+          "enum": [
+            "DocumentMetadataNotFoundError"
+          ],
+          "type": "string"
+        },
+        "innerError": {
+          "$ref": "#/definitions/Error"
+        },
+        "message": {
+          "description": "A short message describing the error.",
+          "type": "string",
+          "x-nullable": true
+        },
+        "stackTrace": {
+          "description": "Stack Trace of the error.",
+          "type": "string",
+          "x-nullable": true
+        }
+      },
+      "title": "DocumentMetadataNotFoundError",
+      "type": "object"
+    },
+    "DocumentMetadataResponse": {
+      "additionalProperties": false,
+      "description": "The metadata for a document in the service.",
+      "properties": {
+        "companyId": {
+          "description": "The company id of the company the document belongs to.",
+          "format": "int32",
+          "type": "integer"
+        },
+        "componentId": {
+          "description": "The id of the RQ component that this document pertains to.",
+          "format": "int32",
+          "type": "integer"
+        },
+        "componentPrimaryKey": {
+          "description": "The primary key of the RQ component this documents pertains to.",
+          "format": "int32",
+          "type": "integer"
+        },
+        "createdByUserId": {
+          "description": "The RQ id of the employee that created the document.",
+          "type": "string",
+          "x-nullable": true
+        },
+        "createdDateUTC": {
+          "description": "The UTC date and time that the document was created.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "fileName": {
+          "description": "The filename of the document.",
+          "type": "string",
+          "x-nullable": true
+        },
+        "fileSize": {
+          "description": "The size in bytes of the document.",
+          "format": "int32",
+          "type": "integer"
+        },
+        "id": {
+          "description": "The id of the document.",
+          "format": "uuid",
+          "type": "string"
+        },
+        "rqCustomerId": {
+          "description": "The RQ id of the customer that the document is assigned to.",
+          "format": "int32",
+          "type": "integer"
+        },
+        "rqEmployeeId": {
+          "description": "The RQ id of the employee who created the document.",
+          "format": "int32",
+          "type": "integer"
+        },
+        "updatedByUserId": {
+          "description": "The RQ id of the employee that last modified the document.",
+          "type": "string",
+          "x-nullable": true
+        },
+        "updatedDateUTC": {
+          "description": "The UTC date and time that the document was last modified.",
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "DocumentMetadataResponseGetDocumentMetadataFailureResult": {
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "DocumentNotFoundError": {
+      "additionalProperties": false,
+      "description": "The output model when returning an error from the service.",
+      "properties": {
+        "errorInformation": {},
+        "errorType": {
+          "enum": [
+            "DocumentNotFoundError"
+          ],
+          "type": "string"
+        },
+        "innerError": {
+          "$ref": "#/definitions/Error"
+        },
+        "message": {
+          "description": "A short message describing the error.",
+          "type": "string",
+          "x-nullable": true
+        },
+        "stackTrace": {
+          "description": "Stack Trace of the error.",
+          "type": "string",
+          "x-nullable": true
+        }
+      },
+      "title": "DocumentNotFoundError",
+      "type": "object"
+    },
+    "Error": {
+      "additionalProperties": false,
+      "description": "The output model when returning an error from the service.",
+      "properties": {
+        "errorInformation": {
+          "description": "A collection of additional error information.",
+          "items": {
+            "$ref": "#/definitions/ErrorInformation"
+          },
+          "type": "array",
+          "x-nullable": true
+        },
+        "errorType": {
+          "description": "A string identifier for the type of error.",
+          "type": "string",
+          "x-nullable": true
+        },
+        "innerError": {
+          "$ref": "#/definitions/Error"
+        },
+        "message": {
+          "description": "A short message describing the error.",
+          "type": "string",
+          "x-nullable": true
+        },
+        "stackTrace": {
+          "description": "Stack Trace of the error.",
+          "type": "string",
+          "x-nullable": true
+        }
+      },
+      "type": "object"
+    },
+    "ErrorInformation": {
+      "additionalProperties": false,
+      "description": "Error information property attached to an error model.",
+      "properties": {
+        "information": {
+          "description": "The details of the error property.",
+          "x-nullable": true
+        },
+        "type": {
+          "description": "The name of the error property.",
+          "example": "Name",
+          "type": "string",
+          "x-nullable": true
+        }
+      },
+      "type": "object"
+    },
+    "FileStreamResultGetDocumentFailureResult": {
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "UnexpectedError": {
+      "additionalProperties": false,
+      "description": "The output model when returning an error from the service.",
+      "properties": {
+        "errorInformation": {
+          "type": "null"
+        },
+        "errorType": {
+          "enum": [
+            "UnexpectedError"
+          ],
+          "type": "string"
+        },
+        "innerError": {
+          "$ref": "#/definitions/Error"
+        },
+        "message": {
+          "description": "A short message describing the error.",
+          "type": "string",
+          "x-nullable": true
+        },
+        "stackTrace": {
+          "description": "Stack Trace of the error.",
+          "type": "string",
+          "x-nullable": true
+        }
+      },
+      "title": "UnexpectedError",
+      "type": "object"
+    },
+    "UnitCreateDocumentFailureResult": {
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "UnitDeleteDocumentFailureResult": {
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "UnitUpdateDocumentFailureResult": {
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "ValidationError": {
+      "additionalProperties": false,
+      "description": "The output model when returning an error from the service.",
+      "properties": {
+        "errorInformation": {},
+        "errorType": {
+          "enum": [
+            "ValidationError"
+          ],
+          "type": "string"
+        },
+        "innerError": {
+          "$ref": "#/definitions/Error"
+        },
+        "message": {
+          "description": "A short message describing the error.",
+          "type": "string",
+          "x-nullable": true
+        },
+        "stackTrace": {
+          "description": "Stack Trace of the error.",
+          "type": "string",
+          "x-nullable": true
+        }
+      },
+      "title": "ValidationError",
+      "type": "object"
+    }
+  },
+  "tags": [
+    {
+      "description": "Endpoints for uploading/retrieving/deleting documents",
+      "name": "Documents"
+    }
+  ],
+  "x-components": {}
+}
